@@ -1,0 +1,7 @@
+.vs
+*.config
+*obj
+*bin
+*app
+*appsettings*
+TestResults
