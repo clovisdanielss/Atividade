@@ -1,0 +1,11 @@
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Atividade.exe
+C:\Users\clovi\source\repos\Atividade\Atividade\app\appsettings.Development.json
+C:\Users\clovi\source\repos\Atividade\Atividade\app\appsettings.json
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Atividade.dll
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Atividade.deps.json
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Atividade.runtimeconfig.json
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Atividade.pdb
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Microsoft.OpenApi.dll
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\clovi\source\repos\Atividade\Atividade\app\Swashbuckle.AspNetCore.SwaggerUI.dll
