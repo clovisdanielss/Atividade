@@ -15,6 +15,9 @@ Uma venda deve conter:
 - Um identificador
 
 A transição de estado deve obedecer as seguintes regras:
-Aguardando pagamento $\arrowright$ Pagamento Aprovado $\arrowright$ Enviado $\arrowright$ Entregue
-Aguardando pagamento $\arrowright$ Cancelado
-Aguardando pagamento $\arrowright$ Pagamento Aprovado $\arrowright$ Cancelado
+
+> Aguardando pagamento --> Pagamento Aprovado --> Enviado --> Entregue
+
+> Aguardando pagamento --> Cancelado
+
+> Aguardando pagamento --> Pagamento Aprovado --> Cancelado
