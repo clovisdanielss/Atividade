@@ -80,7 +80,9 @@ namespace Atividade.Controllers
                 try
                 {
                     sale = sales.Create(sale);
-                    return Ok(sale);
+                    return new ObjectResult(sale){
+                        StatusCode = 201
+                    };
                 }
                 catch(Exception ex)
                 {
