@@ -8,14 +8,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseSwagger();
-
 app.UseSwaggerUI(op => {
     op.SwaggerEndpoint("/swagger/v1/swagger.json", "API de vendas V1");
 });
