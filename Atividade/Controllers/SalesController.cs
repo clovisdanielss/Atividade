@@ -39,6 +39,8 @@ namespace Atividade.Controllers
                 }
                 catch(Exception ex)
                 {
+                    if(ex is ItemNotFoundException)
+                        return NotFound(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 
