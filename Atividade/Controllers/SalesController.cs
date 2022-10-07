@@ -1,6 +1,7 @@
-using Atividade.Exceptions;
+using Atividade.Messages;
 using Atividade.Models;
 using Atividade.Repository;
+using Atividade.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Atividade.Controllers
@@ -9,105 +10,97 @@ namespace Atividade.Controllers
     [Route("[controller]")]
     public class SalesController : ControllerBase
     {
+        private SalesRepository Repository;
+        private SalesService Service;
+        public SalesController(SalesRepository salesRepository, SalesService salesService)
+        {
+            Repository = salesRepository;
+            Service = salesService;
+
+        }
         [HttpGet("{id}")]
         public IActionResult Get([FromRoute] string id)
         {
-            using (SalesRepository sales = new SalesRepository())
+            var sale = Repository.GetById(id);
+            if (sale != null)
             {
-                try
-                {
-                    var sale = sales.GetById(id);
-                    return Ok(sale);
-                }
-                catch(Exception ex)
-                {
-                    return NotFound(ex.Message); 
-                }
+                return Ok(sale);
             }
+            else
+            {
+                return NotFound(SalesControllerMessages.ItemNotFound(id));
+            }
+
         }
 
         [HttpPost("{id}/status")]
         public IActionResult UpdateStatus([FromRoute] string id, [FromBody] SaleStatus saleStatus)
         {
-            using (SalesRepository sales = new SalesRepository())
+            var sale = Repository.GetById(id);
+            if (sale == null)
             {
-                try
-                {
-                    var sale = sales.GetById(id);
-                    sales.ChangeStatus(sale, saleStatus);
-                    return Ok(sale);
-                }
-                catch(Exception ex)
-                {
-                    if(ex is ItemNotFoundException)
-                        return NotFound(ex.Message);
-                    return BadRequest(ex.Message);
-                }
-                
+                return NotFound(SalesControllerMessages.ItemNotFound(id));
+            }
+            var statusChanged = Service.ChangeStatus(sale, saleStatus);
+            var statusUpdated = false;
+            if (statusChanged)
+            {
+                statusUpdated = Repository.Update(sale);
+            }
+            if (statusChanged && statusUpdated)
+            {
+                return Ok(sale);
+            }
+            else
+            {
+                return BadRequest(SalesControllerMessages.ErrorWhenUpdating(sale.Status, saleStatus));
             }
         }
 
         [HttpGet("{id}/status")]
         public IActionResult GetStatus([FromRoute] string id)
         {
-            using (SalesRepository sales = new SalesRepository())
+            var sale = Repository.GetById(id);
+            if (sale != null)
             {
-                try
-                {
-                    var sale = sales.GetById(id);
-                    return Ok(sale.Status);
-                }
-                catch (ItemNotFoundException ex)
-                {
-                    return NotFound(ex.Message);
-                }
+                return Ok(sale.Status);
+            }
+            else
+            {
+                return NotFound(SalesControllerMessages.ItemNotFound(id));
             }
         }
 
         [HttpGet("")]
         public IActionResult GetAll()
         {
-            using (SalesRepository sales = new SalesRepository())
-            {
-                var allSales = sales.GetAll();
-                return Ok(allSales);
-            }
+            var allSales = Repository.GetAll();
+            return Ok(allSales);
         }
 
         [HttpPost("")]
         public IActionResult Post([FromBody] Sale sale)
         {
-            using (SalesRepository sales = new SalesRepository())
+            var createdSale = Repository.Create(sale);
+            if (createdSale != null)
             {
-                try
+                return new ObjectResult(createdSale)
                 {
-                    sale = sales.Create(sale);
-                    return new ObjectResult(sale){
-                        StatusCode = 201
-                    };
-                }
-                catch(Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                    StatusCode = 201
+                };
             }
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] string id)
         {
-            using (SalesRepository sales = new SalesRepository())
+            var sale = Repository.DeleteById(id);
+            if (sale != null)
             {
-                try
-                {
-                    var sale = sales.DeleteById(id);
-                    return Ok(sale);
-                }
-                catch (Exception ex)
-                {
-                    return NotFound(ex.Message);
-                }
+                return Ok(sale);
             }
+            return NotFound();
         }
     };
 

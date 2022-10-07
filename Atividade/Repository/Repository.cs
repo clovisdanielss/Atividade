@@ -5,7 +5,7 @@ namespace Atividade.Repository
         
         public abstract T? GetById(string id);
         public abstract List<T> GetAll();
-        public abstract void Update(T item);
+        public abstract bool Update(T item);
         public abstract T? DeleteById(string id);
         public abstract T? Create(T item);
 

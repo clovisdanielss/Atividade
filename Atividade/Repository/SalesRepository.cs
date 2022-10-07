@@ -1,4 +1,3 @@
-using Atividade.Exceptions;
 using Atividade.Models;
 using Atividade.Repository;
 using System.Collections.Generic;
@@ -14,18 +13,19 @@ namespace Atividade.Repository
 
         }
 
-        public override Sale Create(Sale item)
+        public override Sale? Create(Sale item)
         {
-            if (item == null) throw new SaleMustNotBeNullException();
-            if (item.Salesman == null) throw new SalesmanMustNotBeNullException();
-            if (item.Cart == null) throw new CartMustNotBeNullException();
-            if (item.Cart.Items.Count < 1) throw new AtLeastOneItemRequiredException();
-            item.Id = new Random().Next(10000).ToString();
+            if (item == null || item?.Salesman == null ||
+                item?.Cart == null || item?.Cart?.Items.Count < 1)
+            {
+                return null;
+            }
+            item!.Id = new Random().Next(10000).ToString();
             salesDatabase.Add(item);
             return item;
         }
 
-        public override Sale DeleteById(string id)
+        public override Sale? DeleteById(string id)
         {
             var sale = salesDatabase.FirstOrDefault(sale => sale.Id == id);
             if (sale != null)
@@ -34,7 +34,7 @@ namespace Atividade.Repository
             }
             else
             {
-                throw new ItemNotFoundException();
+                return null;
             }
             return sale;
         }
@@ -44,36 +44,23 @@ namespace Atividade.Repository
             return salesDatabase;
         }
 
-        public override Sale GetById(string id)
+        public override Sale? GetById(string id)
         {
             var sale = salesDatabase.FirstOrDefault(sale => sale.Id == id);
             if (sale == null)
-                throw new ItemNotFoundException();
+                return null;
             return sale;
         }
 
-        public override void Update(Sale newItem)
+        public override bool Update(Sale newItem)
         {
             var index = salesDatabase.FindIndex(item => item.Id == newItem.Id);
             if (index < 0)
-                throw new ItemNotFoundException();
+                return false;
             salesDatabase[index] = newItem;
+            return true;
         }
 
-        public void ChangeStatus(Sale sale, SaleStatus saleStatus)
-        {
-            var allowedWhenWaitingPayment = sale.Status == SaleStatus.WAITING_PAYMENT && (saleStatus == SaleStatus.CANCELLED || saleStatus == SaleStatus.PAYMENT_APPROVED);
-            var allowedWhenPaymentApproved = sale.Status == SaleStatus.PAYMENT_APPROVED && (saleStatus == SaleStatus.CANCELLED || saleStatus == SaleStatus.SENT);
-            var allowedWhenSent = sale.Status == SaleStatus.SENT && saleStatus == SaleStatus.DELIVERED;
-            if (allowedWhenWaitingPayment || allowedWhenPaymentApproved || allowedWhenSent)
-            {
-                sale.Status = saleStatus;
-            }
-            else
-            {
-                throw new ImpossibleToChangeStatusException(sale.Status, saleStatus);
-            }
-            Update(sale);
-        }
+
     }
 }
