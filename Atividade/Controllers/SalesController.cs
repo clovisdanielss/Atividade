@@ -89,7 +89,7 @@ namespace Atividade.Controllers
                     StatusCode = 201
                 };
             }
-            return BadRequest();
+            return BadRequest(SalesControllerMessages.UnexpectedPayloadWhenCreatingItem);
         }
 
         [HttpDelete("{id}")]
@@ -100,7 +100,7 @@ namespace Atividade.Controllers
             {
                 return Ok(sale);
             }
-            return NotFound();
+            return NotFound(SalesControllerMessages.ItemNotFound(id));
         }
     };
 
